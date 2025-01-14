@@ -18,7 +18,7 @@
     
         <p>{{room.descrption}}</p>
 
-        <div class-"comment-wrapper">
+        <div class="comment-wrapper">
             <h3>Conversation</h3>
             <hr>
 
@@ -37,7 +37,7 @@
     
 
         {% if request.user.is_authenticated %}
-        <div class="comment-form"
+        <div class="comment-form">
             <form method="POST" action="">
                 {% csrf_token %}
                 <input type="text" name="body" placeholder="write your message here...."/>
