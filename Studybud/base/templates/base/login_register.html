@@ -17,7 +17,7 @@
               {% csrf_token %}
               <div class="form__group form__group">
                 <label for="room_name">Email</label>
-                <input id="username" name="email" type="text" placeholder="e.g. dennis_ivy" />
+                <input id="username" name="email" type="text" placeholder="dennis_ivy"/>
               </div>
               <div class="form__group">
                 <label for="password">Password</label>
@@ -77,7 +77,6 @@
               </div>
               {% endfor %}
               
-
               <button class="btn btn--main" type="submit">
                 <svg
                   version="1.1"
@@ -100,8 +99,8 @@
             </form>
 
             <div class="auth__action">
-              <p>Already signed up yet?</p>
-              <a href="{% url 'login' %}" class="btn btn--link">Sign Up</a>
+              <p>Already signed up?</p>
+              <a href="{% url 'login' %}" class="btn btn--link">Login</a>
             </div>
           </div>
         </div>
