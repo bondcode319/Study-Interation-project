@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q 
-from django .contrib.auth import authenticate, login, logout
-from .models import Room, Topic, Message,User
+from django.db.models import Q
+from django.contrib.auth import authenticate, login, logout
+from .models import Room, Topic, Message, User
 from .forms import RoomForm, UserForm, MyUserCreationForm
 
 
@@ -26,9 +26,9 @@ def loginPage(request):
         password = request.POST.get('password')
         
         try:
-            user = User.object.get(email=email)
+            user = User.objects.get(email=email)
         except:
-            messages.error(request,'user does not exit')
+            messages.error(request, 'User does not exist')
         
         user = authenticate(request, email=email, password=password)
         
@@ -36,7 +36,7 @@ def loginPage(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Username OR password does not exit')
+            messages.error(request, 'Username OR password does not exist')
             
             
     context = {'page' : page} 
@@ -59,7 +59,7 @@ def  registerPage(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'An error occured during registration')
+            messages.error(request, 'An error occurred during registration')
     return render(request, 'base/login_register.html', {'form':form })
 
     
@@ -73,11 +73,11 @@ def home(request):
         Q(description__icontains=q) 
         )
     
-    topics = Room.objects.all()[0:5]
+    topics = Topic.objects.all()[0:5]
     room_count = rooms.count()
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
     
-    context = {'rooms':rooms, 'topics':topics, room_count:rooms.count, 'room_messages':room_messages}
+    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count, 'room_messages': room_messages}
     return render(request, 'base/home.html', context)
 
 
@@ -96,7 +96,7 @@ def room(request, pk):
         return redirect('room', pk=room.id)
     
     context = {'room': room, 'room_messages':room_messages, 
-               'partcipants' : participants}
+               'participants': participants}
     return render(request, 'base/room.html',context)
 
 def userProfile(request, pk):
@@ -104,7 +104,7 @@ def userProfile(request, pk):
     rooms = user.room_set.all()
     room_messages = user.message_set.all()
     topics = Topic.objects.all()
-    context={'user': user, 'room': rooms, 
+    context={'user': user, 'rooms': rooms, 
              'room_messages' :room_messages, 'topics':topics}
     return render(request, 'base/profile.html', context)
     
@@ -119,7 +119,7 @@ def createRoom(request):
         topic_name = request.POST.get('topic')
         topic,created = Topic.objects.get_or_create(name=topic_name)
         
-        Room.object.create(
+        Room.objects.create(
             host=request.user,
             topic=topic,
             name=request.POST.get('name'),
@@ -138,7 +138,7 @@ def updateRoom(request, pk):
     topics=Topic.objects.all()
     
     if request.user != room.host:
-        return HttpResponse('Your are not allowed here !!')
+        return HttpResponse('You are not allowed here !!')
     
     if request.method == 'POST':
         topic_name = request.POST.get('topic')
@@ -158,7 +158,7 @@ def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
     
     if request.user != room.host:
-        return HttpResponse('Your are not allowed here !!')
+        return HttpResponse('You are not allowed here !!')
     
     if request.method == 'POST':
         room.delete()
@@ -171,7 +171,7 @@ def deleteMessage(request, pk):
     message = Message.objects.get(id=pk)
     
     if request.user != message.user:
-        return HttpResponse('Your are not allowed here !!')
+        return HttpResponse('You are not allowed here !!')
     
     if request.method == 'POST':
         message.delete()
@@ -201,4 +201,4 @@ def topicPage(request):
 def activityPage(request):
     room_messages = Message.objects.all()
     return render(request,'base/activity.html', {'room_messages':room_messages})
-    
+
